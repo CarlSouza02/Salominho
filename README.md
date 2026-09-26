@@ -1,113 +1,58 @@
-# 🦁 SalmoNela
+# 🦁 Salominho | SalmoNela
 
-**Um jogo de estudos bíblicos em pixel art, desenvolvido em Python com Pygame.**
+Protótipo de jogo de estudos bíblicos em **Python + Pygame**.
 
-O SalmoNela é um projeto de aplicativo gamificado para tornar a leitura e o estudo da Bíblia mais interativos. Inspirado em jogos de progressão por fases, ele combinará leitura, quizzes, desafios e um mascote que acompanha a evolução do jogador.
+## Versão 0.1
 
-> **Status:** pré-desenvolvimento. O mascote e as funcionalidades descritas abaixo representam o conceito e o planejamento do projeto, não recursos já implementados.
+- Menu com o Salmão (imagem conceitual temporária).
+- Mapa de Gênesis com dez fases esboçadas e uma acessível.
+- Leitura de Gênesis 1:1–5 via `bible-api.com`, com cache local e fallback de 1 versículo.
+- Quiz demonstrativo com 3 perguntas, explicações, resultados e XP.
+- Projeto preparado para sprites transparentes e textos offline no futuro.
 
-## 🎮 Como vai funcionar
-
-**Ler → Responder → Ganhar XP → Desbloquear fases → Evoluir**
-
-Cada fase terá uma passagem bíblica, perguntas sobre a leitura e uma explicação das respostas. O objetivo é incentivar a compreensão do texto, e não apenas a memorização de curiosidades.
-
-## 🦁 Conheça o Salmão
-
-Nosso mascote é um pequeno leão escriba em **pixel art**, com túnica, pergaminho e bolsa de estudos. Ele reagirá ao progresso do jogador com animações e mensagens.
-
-Animações planejadas: `idle` (respirar e piscar), `happy` (acerto), `wrong` (erro), `thinking` (pensando), `reading` (lendo), `walking` (mapa) e `level_up` (evolução).
-
-## ✨ Funcionalidades planejadas
-
-- **Campanha por fases:** jornadas temáticas, começando por Gênesis.
-- **Bíblia integrada:** leitura por livro, capítulo e versículo, com referências nas perguntas.
-- **Quizzes variados:** múltipla escolha, completar versículos, ordenar acontecimentos e identificar personagens.
-- **Progressão:** experiência (XP), níveis, conquistas e missões diárias.
-- **Mascote animado:** reações aos acertos, erros e conquistas.
-- **Multijogador (futuro):** duelos entre amigos, ligas e torneios.
-
-## 🗺️ Primeira jornada: Gênesis
-
-| Fase | Tema |
-| --- | --- |
-| 1 | A Criação |
-| 2 | Adão e Eva |
-| 3 | Caim e Abel |
-| 4 | Noé |
-| 5 | Torre de Babel |
-| 6 | Abraão |
-| 7 | Isaque |
-| 8 | Jacó |
-| 9 | José |
-| 10 | Desafio final de Gênesis |
-
-## 🛠️ Tecnologias
-
-- **Python:** lógica do jogo.
-- **Pygame:** interface, animações, colisões e eventos.
-- **PNG / sprite sheets:** arte e animação em pixel art.
-- **Integração bíblica:** fonte de texto a definir, respeitando licenças de tradução e termos de uso.
-
-Se o projeto avançar para contas, rankings e partidas online, a arquitetura do backend será definida em uma etapa posterior.
-
-## 📁 Estrutura proposta
-
-```text
-salmonela/
-├── assets/
-│   └── salmao/
-│       ├── idle/
-│       ├── happy/
-│       ├── wrong/
-│       └── walking/
-├── src/
-│   ├── mascot.py
-│   ├── levels.py
-│   ├── quiz.py
-│   └── bible.py
-├── data/
-│   └── levels/
-├── main.py
-├── requirements.txt
-└── README.md
-```
-
-> A estrutura acima é uma proposta para organizar os arquivos à medida que forem criados.
-
-## 🚀 Como executar (quando o protótipo estiver disponível)
-
-Pré-requisito: Python 3.11 ou superior.
+## Executar no Ubuntu/Debian
 
 ```bash
-git clone https://github.com/SEU-USUARIO/salmonela.git
-cd salmonela
-python -m pip install pygame
-python main.py
+sudo apt update
+sudo apt install python3-pygame python3-requests
+git clone https://github.com/CarlSouza02/Salominho.git
+cd Salominho
+python3 main.py
 ```
 
-Substitua `SEU-USUARIO` pelo seu nome de usuário do GitHub. O comando `python main.py` funcionará quando a primeira versão do jogo for adicionada ao repositório.
+No VS Code, selecione o interpretador `/usr/bin/python3` se o Pygame não for encontrado.
 
-## 📌 Roadmap
+## Testes
 
-- [ ] Definir o sprite do Salmão com fundo transparente.
-- [ ] Criar animações básicas: parado, feliz e triste.
-- [ ] Implementar a tela inicial com Pygame.
-- [ ] Criar a primeira fase de Gênesis.
-- [ ] Implementar perguntas, correção e feedback.
-- [ ] Adicionar XP e desbloqueio de fases.
-- [ ] Integrar uma tradução bíblica com permissão de uso.
-- [ ] Adicionar missões e conquistas.
-- [ ] Avaliar duelos e rankings online.
+```bash
+python3 -m unittest discover -s tests -v
+```
 
-## 📖 Conteúdo bíblico e direitos autorais
+## Estrutura
 
-As referências bíblicas poderão fazer parte dos desafios. A inclusão do texto integral de qualquer tradução dependerá de sua licença ou de autorização do detentor dos direitos. Não serão distribuídas traduções protegidas sem permissão.
+```text
+main.py                    telas e loop Pygame
+src/bible.py               cliente bíblico, cache e fallback
+src/levels.py              fases planejadas e quiz demonstrativo
+assets/mascot/concept.png  miniatura conceitual (não é sprite transparente)
+docs/ASSETS.md             especificações dos sprites e tiles
+data/bible/README.md       plano de importação bíblica e créditos
+tests/test_core.py         testes das funções de conteúdo
+```
 
-## 🤝 Contribuições
+## Textos e licenças
 
-O projeto está em fase inicial. Ideias sobre mecânicas, acessibilidade, arte em pixel art e conteúdo educativo são bem-vindas por meio das *Issues* do GitHub, quando o repositório estiver público.
+A amostra offline de Gênesis 1:1 é da **Bíblia Livre (2018)** de Diego Santos, Mario Sérgio e Marco Teles, disponível em https://ebible.org/porbr2018/, sob licença **CC BY 4.0 Brasil**. O texto completo não está incluído.
 
----
+O serviço `bible-api.com` é externo. Para o lançamento, a proposta é importar uma tradução aberta para SQLite.
 
-**SalmoNela** • Estude. Evolua. Desafie.
+## Roadmap
+
+- [x] Menu em Pygame e mapa provisório
+- [x] Uma fase com quiz e XP
+- [x] Consulta bíblica demonstrativa com cache
+- [ ] Criar sprites PNG transparentes e animações
+- [ ] Desenhar tiles e mapa pixel art
+- [ ] Integrar Bíblia offline em SQLite
+- [ ] Desenvolver fases seguintes e salvar progresso
+- [ ] Amigos, duelos e ranking

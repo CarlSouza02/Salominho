@@ -1,0 +1,1 @@
+"""Módulos do protótipo Salominho."""
