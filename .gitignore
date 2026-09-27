@@ -8,3 +8,4 @@ cache/*.json
 !cache/.gitkeep
 *.sqlite3
 .DS_Store
+cache/*.wav

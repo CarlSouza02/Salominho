@@ -10,6 +10,12 @@ Protótipo de jogo de estudos bíblicos em **Python + Pygame**.
 - Quiz demonstrativo com 3 perguntas, explicações, resultados e XP.
 - Projeto preparado para sprites transparentes e textos offline no futuro.
 
+## Vinheta de abertura (v0.2)
+
+Tema instrumental de aproximadamente **11,8 segundos**, em **Sol maior** a **112 BPM**. O jogo toca a vinheta na abertura; pressione **M** para silenciar ou tocar novamente.
+
+`src/audio.py` sintetiza uma versão WAV automaticamente no primeiro acesso, sem numpy nem ffmpeg. Para usar o arranjo estéreo original, copie `salominho_vinheta_v01.ogg` do [pacote de áudio da vinheta](https://github.com/CarlSouza02/Salominho/tree/main/assets/audio) para `assets/audio/`; se existir, o jogo dá preferência ao OGG. O MIDI editável está no repositório.
+
 ## Executar no Ubuntu/Debian
 
 ```bash
@@ -34,6 +40,8 @@ python3 -m unittest discover -s tests -v
 main.py                    telas e loop Pygame
 src/bible.py               cliente bíblico, cache e fallback
 src/levels.py              fases planejadas e quiz demonstrativo
+src/audio.py               reprodução e síntese offline da vinheta
+assets/audio/              MIDI e instruções para OGG estéreo
 assets/mascot/concept.png  miniatura conceitual (não é sprite transparente)
 docs/ASSETS.md             especificações dos sprites e tiles
 data/bible/README.md       plano de importação bíblica e créditos

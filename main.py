@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pygame
 
+from src.audio import play_intro
 from src.bible import get_creation_passage
 from src.levels import LEVELS, QUESTIONS
 
@@ -52,6 +53,7 @@ class Game:
         self.answered = False
         self.selected = None
         self.buttons = []
+        self.audio_on = play_intro(pygame, BASE)
         art = BASE / "assets" / "mascot" / "idle_01.png"
         if not art.exists():
             art = BASE / "assets" / "mascot" / "concept.png"
@@ -89,6 +91,7 @@ class Game:
     def heading(self, title):
         self.text(title, 52, 35, INK, self.large)
         self.text(f"XP: {self.xp}", WIDTH - 162, 46, DARK, self.bold)
+        self.text("M: som " + ("ON" if self.audio_on else "OFF"), WIDTH - 177, 95, MUTED, self.small)
 
     def home(self):
         self.heading("Salominho")
@@ -207,6 +210,13 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                    if pygame.mixer.get_init():
+                        self.audio_on = not self.audio_on
+                        if self.audio_on:
+                            play_intro(pygame, BASE)
+                        else:
+                            pygame.mixer.music.stop()
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     self.go("home")
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
