@@ -177,3 +177,23 @@ A vinheta de abertura é controlada por `src/audio.py`.
 - **v0.3**: 39 mundos, 929 capítulos e progresso persistente.
 - **v0.4.0**: mapas do Pentateuco, 187 fases e definição da arquitetura visual final.
 - **v0.4.1**: remoção dos mapas técnicos e inclusão dos cinco backgrounds temáticos do Pentateuco.
+- **v0.4.2**: primeiras quatro fases narrativas de Gênesis conectadas ao Pygame.
+
+## Fases narrativas jogáveis de Gênesis
+
+A v0.4.2 conecta os arquivos JSON de `assets/worlds/old_testament/01_genesis/phases/` ao Pygame.
+
+As primeiras histórias jogáveis são:
+
+- **Criação e Queda**, Gênesis 1–3, selo Obediência;
+- **Caim e Abel**, Gênesis 4, selo Sinceridade;
+- **A Arca de Noé**, Gênesis 6–9, selo Fidelidade;
+- **Torre de Babel**, Gênesis 11:1–9, selo Humildade.
+
+Fluxo de cada fase:
+
+```text
+Mapa → Introdução → Narrativa → Quiz → Devocional → Recompensa
+```
+
+O progresso dessas histórias é salvo separadamente da leitura dos capítulos bíblicos. Assim, concluir uma história não marca automaticamente o texto bíblico como lido.

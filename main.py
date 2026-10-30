@@ -23,6 +23,7 @@ from src.map_layout import (
 )
 from src.pentateuch_maps import PENTATEUCH_IDS, PENTATEUCH_MAPS
 from src.progress import Progress
+from src.story_phases import GENESIS_PHASE_ANCHORS, load_genesis_story_phases
 from src.worlds import load_old_testament, page_slice
 
 BASE = Path(__file__).resolve().parent
@@ -108,6 +109,10 @@ class Game:
         self.map_scroll = 0
 
         self.progress = Progress(BASE / "save" / "progress.json")
+        self.story_phases = load_genesis_story_phases(BASE)
+        self.current_story_phase = None
+        self.story_segment_index = 0
+        self.story_result_data = None
         self.page = "home"
         self.question_index = 0
         self.correct_count = 0
@@ -263,7 +268,7 @@ class Game:
         )
 
         self.text(
-            "Protótipo v0.3 • progresso salvo localmente",
+            "Protótipo v0.4.2 • 4 fases narrativas de Gênesis",
             55, 626, MUTED, self.small
         )
 
@@ -585,10 +590,17 @@ class Game:
         self.text("azul = lido", 655, 613, BLUE, self.tiny)
         self.text("dourado = dominado", 745, 613, GOLD, self.tiny)
 
+    def story_phase_for_current_chapter(self):
+        if self.current_world.id != "genesis":
+            return None
+        phase_id = GENESIS_PHASE_ANCHORS.get(self.current_chapter)
+        return self.story_phases.get(phase_id) if phase_id else None
+
     def chapter_detail(self):
         world = self.current_world
         chapter = self.current_chapter
         state = self.progress.chapter(world.id, chapter)
+        story_phase = self.story_phase_for_current_chapter()
 
         self.heading(f"{world.name} {chapter}", "Detalhes da fase")
         self.panel(pygame.Rect(70, 145, 884, 420))
@@ -597,19 +609,249 @@ class Game:
         self.text(f"Capítulo: {chapter}/{world.chapters}", 118, 231)
 
         status = "Dominado" if state["mastered"] else "Lido" if state["read"] else "Não iniciado"
-        self.text(f"Status: {status}", 118, 278, DARK)
+        self.text(f"Leitura bíblica: {status}", 118, 272, DARK)
 
-        if world.id == "genesis" and chapter == 1:
-            self.text("Protótipo jogável: A Criação", 118, 326, GREEN, self.bold)
-            self.button("LER", pygame.Rect(118, 398, 220, 62), lambda: self.go("read"), GREEN)
-            self.button("QUIZ", pygame.Rect(382, 398, 220, 62), self.begin_quiz, GOLD)
-            self.button("DEVOCIONAL", pygame.Rect(646, 398, 220, 62), self.devotional, BLUE)
+        if story_phase:
+            phase_state = self.progress.phase(story_phase["id"])
+            story_status = (
+                "Dominada ★" if phase_state["mastered"]
+                else "Concluída" if phase_state["completed"]
+                else "Não iniciada"
+            )
+            self.text(
+                f'História: {story_phase["title"]}',
+                118, 315, GREEN, self.bold
+            )
+            self.text(
+                f'{story_phase["bible_reference"]} • {story_status}',
+                118, 350, MUTED, self.small
+            )
+
+            self.button(
+                "JOGAR FASE",
+                pygame.Rect(118, 405, 330, 62),
+                self.begin_story_phase,
+                GOLD,
+            )
+            if world.id == "genesis" and chapter == 1:
+                self.button(
+                    "LER GÊNESIS 1",
+                    pygame.Rect(488, 405, 330, 62),
+                    lambda: self.go("read"),
+                    GREEN,
+                )
+            else:
+                self.button(
+                    "VOLTAR AO MAPA",
+                    pygame.Rect(488, 405, 330, 62),
+                    lambda: self.go("map"),
+                    PAPER,
+                )
         else:
-            self.text("Conteúdo desta fase será adicionado durante a produção do mundo.", 118, 342, MUTED, self.small)
-            self.button("VOLTAR AO MAPA", pygame.Rect(340, 423, 345, 62), lambda: self.go("map"), PAPER)
+            self.text(
+                "Conteúdo desta fase será adicionado durante a produção do mundo.",
+                118, 342, MUTED, self.small
+            )
+            self.button(
+                "VOLTAR AO MAPA",
+                pygame.Rect(340, 423, 345, 62),
+                lambda: self.go("map"),
+                PAPER,
+            )
 
         if self.message:
             self.text(self.message, 118, 510, GREEN, self.small)
+
+    def story_intro(self):
+        phase = self.current_story_phase
+        if not phase:
+            self.go("map")
+            return
+
+        phase_state = self.progress.phase(phase["id"])
+        self.heading(phase["title"], phase["bible_reference"])
+        self.panel(pygame.Rect(64, 130, 896, 450))
+
+        self.text("Objetivo", 105, 170, DARK, self.bold)
+        y = 210
+        for line in wrap_text(phase["objective"], self.font, 780):
+            self.text(line, 105, y)
+            y += 32
+
+        self.text("Personagens", 105, y + 18, DARK, self.bold)
+        self.text(", ".join(phase["characters"]), 105, y + 56, MUTED, self.small)
+
+        reward = phase["reward"]["name"]
+        status = (
+            "Dominada ★" if phase_state["mastered"]
+            else "Concluída" if phase_state["completed"]
+            else "Nova fase"
+        )
+        self.text(f"Recompensa: selo {reward}", 105, 382, GREEN, self.bold)
+        self.text(f"Status: {status}", 105, 421, MUTED, self.small)
+
+        self.button(
+            "COMEÇAR HISTÓRIA",
+            pygame.Rect(535, 495, 360, 58),
+            lambda: self.go("story_narration"),
+            GOLD,
+        )
+        self.button(
+            "MAPA",
+            pygame.Rect(105, 495, 190, 58),
+            lambda: self.go("map"),
+            PAPER,
+        )
+
+    def story_narration(self):
+        phase = self.current_story_phase
+        parts = phase["narration"]
+        index = self.story_segment_index
+        text = parts[index]
+
+        self.heading(
+            phase["title"],
+            f'História {index + 1}/{len(parts)} • {phase["bible_reference"]}',
+        )
+        self.panel(pygame.Rect(65, 135, 894, 430))
+
+        self.text("Narrativa", 110, 177, DARK, self.bold)
+        y = 230
+        for line in wrap_text(text, self.font, 790):
+            self.text(line, 110, y)
+            y += 36
+
+        event_index = min(index, len(phase["key_events"]) - 1)
+        event = phase["key_events"][event_index]
+        y = max(y + 24, 390)
+        self.text("Ponto-chave", 110, y, GREEN, self.bold)
+        y += 38
+        for line in wrap_text(event, self.small, 790):
+            self.text(line, 110, y, DARK, self.small)
+            y += 27
+
+        if index > 0:
+            self.button(
+                "◀ ANTERIOR",
+                pygame.Rect(105, 595, 210, 48),
+                self.prev_story_segment,
+                PAPER,
+                self.small,
+            )
+
+        label = "IR PARA O QUIZ" if index == len(parts) - 1 else "PRÓXIMO ▶"
+        self.button(
+            label,
+            pygame.Rect(680, 595, 245, 48),
+            self.next_story_segment,
+            GOLD,
+            self.small,
+        )
+
+    def story_quiz(self):
+        phase = self.current_story_phase
+        questions = phase["quiz"]
+        q = questions[self.question_index]
+
+        self.heading(
+            f'Quiz {self.question_index + 1}/{len(questions)}',
+            phase["title"],
+        )
+        self.panel(pygame.Rect(52, 125, 918, 478))
+
+        y = 158
+        for line in wrap_text(q["question"], self.bold, 830):
+            self.text(line, 76, y, DARK, self.bold)
+            y += 30
+
+        option_y = max(225, y + 18)
+        for idx, option in enumerate(q["options"]):
+            rect = pygame.Rect(89, option_y + idx * 72, 830, 54)
+            color = (235, 225, 203)
+            if self.answered and idx == q["correct_index"]:
+                color = (160, 222, 163)
+            elif self.answered and idx == self.selected:
+                color = (245, 163, 160)
+            self.button(
+                f"{chr(65 + idx)}) {option}",
+                rect,
+                lambda idx=idx: self.answer_story(idx),
+                color,
+                self.small,
+            )
+
+        if self.answered:
+            ey = option_y + len(q["options"]) * 72 + 4
+            for line in wrap_text(q["explanation"], self.small, 610):
+                self.text(line, 76, ey, DARK, self.small)
+                ey += 24
+            self.button(
+                "PRÓXIMA",
+                pygame.Rect(720, 612, 205, 45),
+                self.next_story_question,
+                GOLD,
+                self.small,
+            )
+
+    def story_devotional(self):
+        phase = self.current_story_phase
+        devotional = phase["devotional"]
+
+        self.heading("Devocional", phase["title"])
+        self.panel(pygame.Rect(70, 138, 884, 445))
+        self.text(devotional["title"], 112, 184, DARK, self.bold)
+
+        y = 235
+        for line in wrap_text(devotional["text"], self.font, 790):
+            self.text(line, 112, y)
+            y += 34
+
+        y += 22
+        self.text("Para pensar", 112, y, GREEN, self.bold)
+        y += 38
+        for line in wrap_text(devotional["reflection_question"], self.small, 790):
+            self.text(line, 112, y, DARK, self.small)
+            y += 26
+
+        self.button(
+            "CONCLUIR FASE",
+            pygame.Rect(605, 606, 300, 48),
+            self.finish_story_phase,
+            GREEN,
+            self.small,
+        )
+
+    def story_result(self):
+        phase = self.current_story_phase
+        result = self.story_result_data or {}
+        total = len(phase["quiz"])
+        mastered = bool(result.get("mastered"))
+
+        self.heading("Fase concluída!", phase["title"])
+        self.panel(pygame.Rect(70, 145, 884, 420))
+        self.mascot_at(112, 245, 180)
+
+        self.text(
+            f"Acertos: {self.correct_count}/{total}",
+            390, 220, DARK, self.bold
+        )
+        self.text(
+            f'Selo: {phase["reward"]["name"]}',
+            390, 270, GOLD, self.bold
+        )
+        self.text(f"XP total: {self.xp}", 390, 320, DARK, self.bold)
+        self.text(
+            "Fase DOMINADA ★" if mastered else "Fase concluída. Tente novamente para dominar.",
+            390, 370,
+            GREEN if mastered else MUTED,
+            self.bold if mastered else self.small,
+        )
+        self.button(
+            "VOLTAR AO MAPA",
+            pygame.Rect(390, 445, 360, 58),
+            lambda: self.go("map"),
+            PAPER,
+        )
 
     def reading(self):
         self.heading("Gênesis 1", "Leitura demonstrativa")
@@ -696,6 +938,60 @@ class Game:
     # AÇÕES
     # ------------------------------------------------------------------
 
+    def begin_story_phase(self):
+        phase = self.story_phase_for_current_chapter()
+        if not phase:
+            return
+        self.current_story_phase = phase
+        self.story_segment_index = 0
+        self.question_index = 0
+        self.correct_count = 0
+        self.selected = None
+        self.answered = False
+        self.story_result_data = None
+        self.go("story_intro")
+
+    def prev_story_segment(self):
+        self.story_segment_index = max(0, self.story_segment_index - 1)
+
+    def next_story_segment(self):
+        phase = self.current_story_phase
+        if self.story_segment_index < len(phase["narration"]) - 1:
+            self.story_segment_index += 1
+        else:
+            self.question_index = 0
+            self.correct_count = 0
+            self.selected = None
+            self.answered = False
+            self.go("story_quiz")
+
+    def answer_story(self, index):
+        if self.answered:
+            return
+        self.selected = index
+        self.answered = True
+        question = self.current_story_phase["quiz"][self.question_index]
+        if index == question["correct_index"]:
+            self.correct_count += 1
+
+    def next_story_question(self):
+        if not self.answered:
+            return
+        self.question_index += 1
+        self.selected = None
+        self.answered = False
+        if self.question_index >= len(self.current_story_phase["quiz"]):
+            self.go("story_devotional")
+
+    def finish_story_phase(self):
+        phase = self.current_story_phase
+        self.story_result_data = self.progress.record_story_phase(
+            phase["id"],
+            self.correct_count,
+            len(phase["quiz"]),
+        )
+        self.go("story_result")
+
     def open_genesis(self):
         self.open_world(self.worlds[0])
 
@@ -777,6 +1073,11 @@ class Game:
             "world_select": self.world_select,
             "map": self.world_map,
             "chapter": self.chapter_detail,
+            "story_intro": self.story_intro,
+            "story_narration": self.story_narration,
+            "story_quiz": self.story_quiz,
+            "story_devotional": self.story_devotional,
+            "story_result": self.story_result,
             "read": self.reading,
             "quiz": self.quiz,
             "result": self.result,

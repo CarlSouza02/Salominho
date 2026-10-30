@@ -8,7 +8,7 @@ from pathlib import Path
 class Progress:
     def __init__(self, path: Path):
         self.path = Path(path)
-        self.data = {"xp": 0, "chapters": {}}
+        self.data = {"xp": 0, "chapters": {}, "phases": {}}
         self.load()
 
     def load(self) -> None:
@@ -19,6 +19,7 @@ class Progress:
             if isinstance(payload, dict):
                 self.data["xp"] = int(payload.get("xp", 0))
                 self.data["chapters"] = dict(payload.get("chapters", {}))
+                self.data["phases"] = dict(payload.get("phases", {}))
         except (OSError, ValueError, TypeError):
             pass
 
@@ -84,6 +85,53 @@ class Progress:
         self.save()
         return {
             "first_mastery": first_mastery,
+            "mastered": bool(state.get("mastered", False)),
+            "best_score": int(state.get("best_score", 0)),
+            "xp": self.xp,
+        }
+
+    def phase(self, phase_id: str) -> dict:
+        return dict(self.data["phases"].get(phase_id, {
+            "completed": False,
+            "mastered": False,
+            "best_score": 0,
+        }))
+
+    def record_story_phase(
+        self,
+        phase_id: str,
+        score: int,
+        total: int,
+        completion_bonus: int = 20,
+        xp_per_correct: int = 10,
+        mastery_bonus: int = 20,
+    ) -> dict:
+        state = self.phase(phase_id)
+        score = max(0, min(int(score), int(total)))
+        previous_best = int(state.get("best_score", 0))
+
+        first_completion = not bool(state.get("completed", False))
+        if first_completion:
+            state["completed"] = True
+            self.data["xp"] += completion_bonus
+
+        if score > previous_best:
+            self.data["xp"] += (score - previous_best) * xp_per_correct
+            state["best_score"] = score
+
+        mastered_now = total > 0 and score == total
+        first_mastery = mastered_now and not bool(state.get("mastered", False))
+        if first_mastery:
+            state["mastered"] = True
+            self.data["xp"] += mastery_bonus
+
+        self.data["phases"][phase_id] = state
+        self.save()
+
+        return {
+            "first_completion": first_completion,
+            "first_mastery": first_mastery,
+            "completed": bool(state.get("completed", False)),
             "mastered": bool(state.get("mastered", False)),
             "best_score": int(state.get("best_score", 0)),
             "xp": self.xp,
