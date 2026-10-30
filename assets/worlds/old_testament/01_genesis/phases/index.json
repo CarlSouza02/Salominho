@@ -1,7 +1,7 @@
 {
   "world": "genesis",
   "world_name": "Gênesis",
-  "version": 2,
+  "version": 3,
   "rule": "1 fase = 1 capítulo bíblico",
   "phases": [
     {
@@ -11,6 +11,15 @@
       "title": "A Criação",
       "bible_reference": "Gênesis 1",
       "reward": "Propósito",
+      "status": "playable"
+    },
+    {
+      "id": "genesis_002",
+      "chapter": 2,
+      "file": "002_genesis_2.json",
+      "title": "O Jardim do Éden",
+      "bible_reference": "Gênesis 2",
+      "reward": "Responsabilidade",
       "status": "playable"
     }
   ]

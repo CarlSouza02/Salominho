@@ -1,0 +1,98 @@
+{
+  "id": "genesis_002",
+  "order": 2,
+  "chapter": 2,
+  "expected_verses": 25,
+  "title": "O Jardim do Éden",
+  "bible_reference": "Gênesis 2",
+  "map_region": "Criação e Éden",
+  "objective": "Compreender que Deus cria o ser humano com propósito, responsabilidade, relacionamento e limites.",
+  "biblical_emphasis": "Gênesis 2 aprofunda a criação do ser humano, apresenta o jardim do Éden, a responsabilidade de cultivá-lo, a ordem divina e a formação da mulher.",
+  "characters": [
+    "Deus",
+    "Adão",
+    "Eva"
+  ],
+  "key_events": [
+    "Deus conclui sua obra, descansa no sétimo dia e o abençoa.",
+    "Deus forma o homem do pó da terra e lhe dá o fôlego de vida.",
+    "Deus planta o jardim do Éden e coloca o homem nele.",
+    "O homem recebe a tarefa de cultivar e guardar o jardim, junto com uma ordem clara sobre a árvore do conhecimento do bem e do mal.",
+    "Deus apresenta os animais ao homem, que lhes dá nomes.",
+    "Deus forma a mulher a partir de uma parte do homem, estabelecendo uma relação de companheirismo e unidade."
+  ],
+  "narration": [
+    "Gênesis 2 começa concluindo o relato da criação: no sétimo dia, Deus encerra sua obra, descansa e abençoa esse dia. O capítulo então volta o foco para a criação do ser humano e sua vida no jardim.",
+    "Deus forma o homem do pó da terra e sopra em suas narinas o fôlego de vida. Assim, o homem se torna um ser vivente. A narrativa destaca que a vida humana depende de Deus.",
+    "Deus planta um jardim no Éden e coloca ali o homem. O jardim possui árvores agradáveis e boas para alimento, e um rio o atravessa. O ser humano recebe um lugar para viver e uma criação para cuidar.",
+    "Deus encarrega o homem de cultivar e guardar o jardim. Ele também estabelece um limite: o homem não deve comer da árvore do conhecimento do bem e do mal. Responsabilidade e liberdade aparecem juntas com uma ordem clara.",
+    "Deus declara que não é bom que o homem esteja só. Os animais são apresentados ao homem, que lhes dá nomes, mas nenhum deles corresponde a um companheiro adequado para ele.",
+    "Então Deus forma a mulher a partir de uma parte do homem e a traz até ele. O capítulo termina apresentando a união entre homem e mulher e a ideia de que os dois se tornam uma só carne."
+  ],
+  "quiz": [
+    {
+      "question": "O que acontece no início de Gênesis 2 após a conclusão da criação?",
+      "options": [
+        "Deus inicia o dilúvio",
+        "Deus descansa no sétimo dia e o abençoa",
+        "Adão constrói uma cidade",
+        "A serpente aparece"
+      ],
+      "correct_index": 1,
+      "explanation": "Gênesis 2:1-3 conclui a semana da criação com o descanso e a bênção do sétimo dia."
+    },
+    {
+      "question": "De que Deus forma o homem em Gênesis 2?",
+      "options": [
+        "Da água",
+        "Do pó da terra",
+        "Da madeira",
+        "Da luz"
+      ],
+      "correct_index": 1,
+      "explanation": "O texto diz que Deus forma o homem do pó da terra e lhe dá o fôlego de vida."
+    },
+    {
+      "question": "Qual tarefa o homem recebe no jardim do Éden?",
+      "options": [
+        "Construir uma torre",
+        "Cultivar e guardar o jardim",
+        "Sair imediatamente do jardim",
+        "Dar nome às estrelas"
+      ],
+      "correct_index": 1,
+      "explanation": "Gênesis 2:15 associa a presença do homem no jardim ao trabalho de cultivá-lo e guardá-lo."
+    },
+    {
+      "question": "Qual limite Deus estabelece para o homem?",
+      "options": [
+        "Não beber do rio",
+        "Não tocar em nenhum animal",
+        "Não comer da árvore do conhecimento do bem e do mal",
+        "Não plantar árvores"
+      ],
+      "correct_index": 2,
+      "explanation": "A ordem sobre essa árvore estabelece um limite claro dentro do jardim."
+    },
+    {
+      "question": "Por que a mulher é formada no relato de Gênesis 2?",
+      "options": [
+        "Porque não era bom que o homem estivesse só",
+        "Para governar uma cidade",
+        "Para substituir os animais",
+        "Para construir o jardim"
+      ],
+      "correct_index": 0,
+      "explanation": "O capítulo afirma que não era bom que o homem estivesse só e apresenta a mulher como companheira correspondente."
+    }
+  ],
+  "devotional": {
+    "title": "Liberdade com propósito",
+    "text": "Gênesis 2 apresenta uma vida que inclui descanso, trabalho, relacionamento e limites. Adão recebe um jardim para cultivar e guardar, mas também uma ordem que precisa respeitar. Isso nos lembra que liberdade não significa viver sem responsabilidade. Os dons que recebemos também trazem tarefas, cuidado com o próximo e limites que nos protegem.",
+    "reflection_question": "Quais responsabilidades Deus colocou diante de você hoje, e como você pode cuidar bem delas?"
+  },
+  "reward": {
+    "type": "seal",
+    "name": "Responsabilidade"
+  }
+}

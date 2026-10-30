@@ -7,6 +7,7 @@ from pathlib import Path
 
 GENESIS_PHASE_ANCHORS = {
     1: "genesis_001",
+    2: "genesis_002",
 }
 
 
@@ -15,6 +16,7 @@ def _validate_phase(phase: dict) -> None:
         "id",
         "order",
         "chapter",
+        "expected_verses",
         "title",
         "bible_reference",
         "objective",
@@ -32,6 +34,12 @@ def _validate_phase(phase: dict) -> None:
     if not isinstance(phase["chapter"], int) or phase["chapter"] < 1:
         raise ValueError(f'Capítulo inválido na fase {phase["id"]}')
 
+    if (
+        not isinstance(phase["expected_verses"], int)
+        or phase["expected_verses"] < 1
+    ):
+        raise ValueError(f'Contagem de versículos inválida em {phase["id"]}')
+
     if not phase["narration"]:
         raise ValueError(f'Fase {phase["id"]} sem narração')
 
@@ -41,7 +49,11 @@ def _validate_phase(phase: dict) -> None:
     for question in phase["quiz"]:
         options = question.get("options", [])
         correct = question.get("correct_index")
-        if not options or not isinstance(correct, int) or not (0 <= correct < len(options)):
+        if (
+            not options
+            or not isinstance(correct, int)
+            or not (0 <= correct < len(options))
+        ):
             raise ValueError(f'Questão inválida na fase {phase["id"]}')
 
 

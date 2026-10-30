@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from src.bible import get_creation_passage, normalize_api_response
+from src.bible import get_bible_chapter, get_creation_passage, normalize_api_response
 from src.levels import QUESTIONS, LEVELS
 
 
@@ -24,12 +24,21 @@ class BibleTests(unittest.TestCase):
             self.assertTrue(0 <= q["correct"] < len(q["choices"]))
 
     @patch("src.bible.requests.get")
-    def test_offline_fallback(self, mock_get):
+    def test_offline_fallback_for_genesis_1(self, mock_get):
         import requests
         mock_get.side_effect = requests.ConnectionError("offline")
         result = get_creation_passage()
         self.assertTrue(result["offline"])
         self.assertTrue(result["verses"])
+
+    @patch("src.bible.requests.get")
+    def test_offline_fallback_for_other_chapter_is_non_fabricated(self, mock_get):
+        import requests
+        mock_get.side_effect = requests.ConnectionError("offline")
+        result = get_bible_chapter("genesis", 2)
+        self.assertTrue(result["offline"])
+        self.assertEqual(result["verses"], [])
+        self.assertEqual(result["reference"], "Gênesis 2")
 
 
 if __name__ == "__main__":

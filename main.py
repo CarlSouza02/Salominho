@@ -11,7 +11,7 @@ from pathlib import Path
 import pygame
 
 from src.audio import play_intro
-from src.bible import get_creation_passage
+from src.bible import get_bible_chapter
 from src.levels import QUESTIONS
 from src.map_art import draw_pentateuch_background
 from src.map_layout import (
@@ -89,7 +89,7 @@ class Game:
     WORLDS_PER_PAGE = 12
     CHAPTERS_PER_PAGE = 20
 
-    def __init__(self, passage: dict):
+    def __init__(self):
         pygame.init()
         pygame.display.set_caption("Salominho | Jornada Bíblica")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -101,7 +101,7 @@ class Game:
         self.large = pygame.font.SysFont("dejavusans", 42, bold=True)
         self.bold = pygame.font.SysFont("dejavusans", 24, bold=True)
 
-        self.passage = passage
+        self.passage = None
         self.worlds = load_old_testament(BASE)
         self.current_world = self.worlds[0]
         self.current_chapter = 1
@@ -272,7 +272,7 @@ class Game:
         )
 
         self.text(
-            "v0.4.3 • Fase 1 pronta: Gênesis 1 — A Criação",
+            "v0.4.4 • Gênesis 1 e 2 jogáveis",
             55, 626, MUTED, self.small
         )
 
@@ -648,20 +648,12 @@ class Game:
                 self.begin_story_phase,
                 GOLD,
             )
-            if world.id == "genesis" and chapter == 1:
-                self.button(
-                    "LER GÊNESIS 1",
-                    pygame.Rect(488, 405, 330, 62),
-                    lambda: self.open_reading("chapter"),
-                    GREEN,
-                )
-            else:
-                self.button(
-                    "VOLTAR AO MAPA",
-                    pygame.Rect(488, 405, 330, 62),
-                    lambda: self.go("map"),
-                    PAPER,
-                )
+            self.button(
+                "LER CAPÍTULO",
+                pygame.Rect(488, 405, 330, 62),
+                lambda: self.open_reading("chapter"),
+                GREEN,
+            )
         else:
             self.text(
                 "Conteúdo desta fase será adicionado durante a produção do mundo.",
@@ -754,7 +746,7 @@ class Game:
                 self.small,
             )
 
-        label = "LER GÊNESIS 1" if index == len(parts) - 1 else "PRÓXIMO ▶"
+        label = f'LER {phase["bible_reference"].upper()}' if index == len(parts) - 1 else "PRÓXIMO ▶"
         self.button(
             label,
             pygame.Rect(680, 595, 245, 48),
@@ -869,13 +861,27 @@ class Game:
         )
 
     def reading(self):
-        self.heading("Gênesis 1", "Leitura bíblica da Fase 1")
+        phase = self.story_phase_for_current_chapter()
+        title = (
+            phase["bible_reference"]
+            if phase
+            else f"{self.current_world.name} {self.current_chapter}"
+        )
+        expected_verses = int(phase.get("expected_verses", 0)) if phase else 0
+        passage = self.passage or {
+            "reference": title,
+            "translation": "Leitura indisponível",
+            "verses": [],
+            "offline": True,
+        }
+
+        self.heading(title, "Leitura bíblica")
         self.panel(pygame.Rect(53, 118, 910, 474))
-        self.text(self.passage["reference"], 78, 139, DARK, self.bold)
+        self.text(passage.get("reference", title), 78, 139, DARK, self.bold)
 
         content_rect = pygame.Rect(78, 190, 835, 290)
         lines = []
-        for verse in self.passage.get("verses", []):
+        for verse in passage.get("verses", []):
             verse_text = f'{verse["number"]}. {verse["text"]}'
             wrapped = wrap_text(verse_text, self.small, content_rect.width - 20)
             lines.extend(wrapped)
@@ -896,11 +902,16 @@ class Game:
 
         pygame.draw.rect(self.screen, (226, 211, 183), content_rect, 1)
 
-        full_chapter = len(self.passage.get("verses", [])) >= 31
-        self.text(self.passage["translation"], 78, 505, MUTED, self.small)
+        verse_count = len(passage.get("verses", []))
+        full_chapter = expected_verses > 0 and verse_count >= expected_verses
+        self.text(
+            passage.get("translation", "Leitura indisponível"),
+            78, 505, MUTED, self.small
+        )
+
         if full_chapter:
             self.text(
-                "Role o mouse ou use ↑/↓ para percorrer os 31 versículos.",
+                f"Capítulo completo: {verse_count} versículos. Use a rolagem para ler.",
                 78, 535, MUTED, self.tiny
             )
             self.button(
@@ -911,11 +922,27 @@ class Game:
             )
         else:
             self.text(
-                "Capítulo incompleto: conecte-se uma vez para carregar Gênesis 1 inteiro.",
-                78, 535, RED, self.tiny
+                f"Leitura completa indisponível ({verse_count}/{expected_verses or '?'} versículos).",
+                78, 525, RED, self.tiny
             )
+            self.text(
+                "Você pode continuar a fase, mas o capítulo não será marcado como lido.",
+                78, 548, MUTED, self.tiny
+            )
+            if self.reading_return == "story_quiz":
+                self.button(
+                    "CONTINUAR PARA O QUIZ",
+                    pygame.Rect(535, 610, 405, 48),
+                    self.continue_after_incomplete_reading,
+                    GOLD,
+                    self.small,
+                )
 
-        back_page = "story_narration" if self.reading_return == "story_quiz" else "chapter"
+        back_page = (
+            "story_narration"
+            if self.reading_return == "story_quiz"
+            else "chapter"
+        )
         self.button(
             "VOLTAR",
             pygame.Rect(53, 610, 174, 48),
@@ -1063,21 +1090,45 @@ class Game:
     def open_reading(self, return_page="chapter"):
         self.read_scroll = 0
         self.reading_return = return_page
+        self.passage = get_bible_chapter(
+            self.current_world.id,
+            self.current_chapter,
+        )
         self.go("read")
 
+    def continue_after_incomplete_reading(self):
+        if self.reading_return != "story_quiz":
+            self.go("chapter")
+            return
+        self.question_index = 0
+        self.correct_count = 0
+        self.selected = None
+        self.answered = False
+        self.go("story_quiz")
+
     def finish_reading(self):
-        if len(self.passage.get("verses", [])) < 31:
-            self.message = "Gênesis 1 ainda não foi carregado por completo."
+        phase = self.story_phase_for_current_chapter()
+        expected_verses = int(phase.get("expected_verses", 0)) if phase else 0
+        verse_count = len((self.passage or {}).get("verses", []))
+        if expected_verses <= 0 or verse_count < expected_verses:
+            self.message = "O capítulo ainda não foi carregado por completo."
             return
 
-        first = self.progress.mark_read("genesis", 1, 20)
-        self.message = (
-            "+20 XP • Gênesis 1 marcado como lido"
-            if first
-            else "Gênesis 1 já estava marcado como lido"
+        first = self.progress.mark_read(
+            self.current_world.id,
+            self.current_chapter,
+            20,
         )
-        self.current_world = self.worlds[0]
-        self.current_chapter = 1
+        reference = (
+            phase["bible_reference"]
+            if phase
+            else f"{self.current_world.name} {self.current_chapter}"
+        )
+        self.message = (
+            f"+20 XP • {reference} marcado como lido"
+            if first
+            else f"{reference} já estava marcado como lido"
+        )
 
         if self.reading_return == "story_quiz":
             self.question_index = 0
@@ -1232,8 +1283,4 @@ class Game:
 
 
 if __name__ == "__main__":
-    passage = get_creation_passage()
-    print("Fonte bíblica:", passage["translation"])
-    if passage["offline"]:
-        print("Sem rede: usando cache local ou amostra offline de Gênesis 1.")
-    Game(passage).run()
+    Game().run()

@@ -4,7 +4,7 @@ Jogo educativo de estudos bíblicos em **Python + Pygame**, com progressão por 
 
 ## Versão atual
 
-**v0.4.3 — Primeira fase completa: Gênesis 1**
+**v0.4.4 — Gênesis 1 e 2 jogáveis + leitor bíblico dinâmico**
 
 Esta versão consolida a estrutura de mundos, progresso persistente e os cinco primeiros mapas do Antigo Testamento.
 
@@ -16,7 +16,7 @@ Esta versão consolida a estrutura de mundos, progresso persistente e os cinco p
 - estados de capítulo: **pendente**, **concluído** e **dominado**;
 - seleção de mundos paginada;
 - mapas roláveis;
-- **Gênesis 1 como primeira fase completa e jogável**;
+- **Gênesis 1 e Gênesis 2 como fases completas e jogáveis**;
 - sistema de áudio/vinheta;
 - **Pentateuco funcional com 187 fases**:
   - Gênesis: 50;
@@ -179,12 +179,16 @@ A vinheta de abertura é controlada por `src/audio.py`.
 - **v0.4.1**: remoção dos mapas técnicos e inclusão dos cinco backgrounds temáticos do Pentateuco.
 - **v0.4.2**: protótipo de histórias agrupando capítulos, posteriormente descartado.
 - **v0.4.3**: arquitetura corrigida para 1 capítulo = 1 fase; Gênesis 1 é a primeira fase completa.
+- **v0.4.4**: Gênesis 2 implementado e leitor bíblico generalizado por capítulo.
 
 ## Fase jogável atual
 
-A arquitetura oficial é **1 capítulo bíblico = 1 fase**. A primeira fase pronta é:
+A arquitetura oficial é **1 capítulo bíblico = 1 fase**. As duas primeiras fases estão prontas:
 
-### Mundo 1 — Gênesis / Fase 1 — Gênesis 1: A Criação
+### Mundo 1 — Gênesis
+
+- **Fase 1:** Gênesis 1 — A Criação
+- **Fase 2:** Gênesis 2 — O Jardim do Éden
 
 ```text
 Mapa
@@ -202,6 +206,6 @@ Devocional
 XP + selo Propósito
 ```
 
-A leitura completa é buscada pelo `bible-api.com` e fica em cache local. Se o jogo estiver offline antes desse primeiro carregamento, a fase continua acessível, mas o capítulo não pode ser marcado como lido até os 31 versículos estarem disponíveis.
+A leitura é buscada pelo `bible-api.com` de acordo com o capítulo atual e fica em cache local. Se o capítulo completo não estiver disponível, a narrativa e o quiz continuam jogáveis, mas o capítulo não é marcado como lido.
 
-Gênesis terá **50 fases**, uma por capítulo. A mesma regra será usada para os demais livros.
+Gênesis terá **50 fases**, uma por capítulo. A mesma infraestrutura já pode ser reutilizada nos próximos capítulos.

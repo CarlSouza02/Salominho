@@ -4,21 +4,34 @@
 
 Gênesis possui **50 capítulos**, portanto este mundo terá **50 fases**.
 
-## Primeira fase pronta
+## Fases jogáveis
 
 ### Fase 1 — Gênesis 1: A Criação
 
-- capítulo: Gênesis 1;
-- 6 blocos narrativos, correspondentes aos seis dias descritos no capítulo;
-- leitura de Gênesis 1 com rolagem quando o capítulo completo estiver disponível pela API/cache;
+- 31 versículos esperados;
+- 6 blocos narrativos sobre os seis dias de Gênesis 1;
+- leitura bíblica com rolagem;
 - 5 perguntas de quiz;
-- devocional e pergunta de reflexão;
-- XP, progresso e selo **Propósito**.
+- devocional;
+- selo **Propósito**.
 
-Fluxo:
+### Fase 2 — Gênesis 2: O Jardim do Éden
+
+- 25 versículos esperados;
+- sétimo dia e descanso;
+- formação do homem;
+- jardim do Éden;
+- trabalho, responsabilidade e limite;
+- animais e seus nomes;
+- formação da mulher e união;
+- 5 perguntas de quiz;
+- devocional;
+- selo **Responsabilidade**.
+
+Fluxo padrão:
 
 ```text
 Mapa → Introdução → Narrativa → Leitura → Quiz → Devocional → Recompensa
 ```
 
-O sétimo dia não foi colocado nesta fase, porque Gênesis 1 termina no sexto dia. O descanso do sétimo dia aparece em Gênesis 2:1–3 e será tratado na Fase 2.
+O leitor bíblico agora é dinâmico: ao entrar em uma fase, ele busca o capítulo correspondente e salva em cache local.

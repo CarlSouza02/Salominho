@@ -1,16 +1,15 @@
 # Fases de Gênesis
 
-A regra do Salominho é:
+Regra do Salominho:
 
 ```text
 1 livro = 1 mundo
 1 capítulo = 1 fase
 ```
 
-Gênesis terá 50 arquivos de fase quando o mundo estiver completo.
+## Implementadas
 
-## Disponível agora
+- `001_genesis_1.json` — **Gênesis 1: A Criação**
+- `002_genesis_2.json` — **Gênesis 2: O Jardim do Éden**
 
-- `001_genesis_1.json` — **Gênesis 1: A Criação** — jogável.
-
-Os antigos arquivos que agrupavam vários capítulos em uma única fase foram removidos para manter a arquitetura correta do jogo.
+Cada JSON contém referência bíblica, contagem esperada de versículos, objetivo, personagens, acontecimentos, narração, quiz, devocional e recompensa.

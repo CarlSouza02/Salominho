@@ -92,5 +92,6 @@
   "reward": {
     "type": "seal",
     "name": "Propósito"
-  }
+  },
+  "expected_verses": 31
 }
