@@ -1,18 +1,16 @@
-# Fases narrativas de Gênesis
+# Fases de Gênesis
 
-Este diretório contém as primeiras quatro fases narrativas do Mundo 01 — Gênesis.
-
-Cada fase foi estruturada para poder ser consumida futuramente pelo Pygame:
-
-1. `01_criacao_e_queda.json` — Gênesis 1–3
-2. `02_caim_e_abel.json` — Gênesis 4
-3. `03_arca_de_noe.json` — Gênesis 6–9
-4. `04_torre_de_babel.json` — Gênesis 11:1–9
-
-Fluxo sugerido no jogo:
+A regra do Salominho é:
 
 ```text
-Narração → Quiz → Aplicação/Devocional → Recompensa
+1 livro = 1 mundo
+1 capítulo = 1 fase
 ```
 
-As fases resumem os acontecimentos principais e não substituem a leitura do texto bíblico completo.
+Gênesis terá 50 arquivos de fase quando o mundo estiver completo.
+
+## Disponível agora
+
+- `001_genesis_1.json` — **Gênesis 1: A Criação** — jogável.
+
+Os antigos arquivos que agrupavam vários capítulos em uma única fase foram removidos para manter a arquitetura correta do jogo.

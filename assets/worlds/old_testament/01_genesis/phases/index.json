@@ -1,35 +1,17 @@
 {
   "world": "genesis",
   "world_name": "Gênesis",
-  "version": 1,
+  "version": 2,
+  "rule": "1 fase = 1 capítulo bíblico",
   "phases": [
     {
-      "id": "genesis_01",
-      "file": "01_criacao_e_queda.json",
-      "title": "Criação e Queda",
-      "chapters": "Gênesis 1–3",
-      "reward": "Obediência"
-    },
-    {
-      "id": "genesis_02",
-      "file": "02_caim_e_abel.json",
-      "title": "Caim e Abel",
-      "chapters": "Gênesis 4",
-      "reward": "Sinceridade"
-    },
-    {
-      "id": "genesis_03",
-      "file": "03_arca_de_noe.json",
-      "title": "A Arca de Noé",
-      "chapters": "Gênesis 6–9",
-      "reward": "Fidelidade"
-    },
-    {
-      "id": "genesis_04",
-      "file": "04_torre_de_babel.json",
-      "title": "Torre de Babel",
-      "chapters": "Gênesis 11:1–9",
-      "reward": "Humildade"
+      "id": "genesis_001",
+      "chapter": 1,
+      "file": "001_genesis_1.json",
+      "title": "A Criação",
+      "bible_reference": "Gênesis 1",
+      "reward": "Propósito",
+      "status": "playable"
     }
   ]
 }

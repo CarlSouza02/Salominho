@@ -31,7 +31,7 @@ def normalize_api_response(payload: dict) -> dict:
     if not cleaned:
         raise ValueError("API retornou uma passagem sem versículos válidos")
     return {
-        "reference": payload.get("reference", "Gênesis 1:1-5"),
+        "reference": payload.get("reference", "Gênesis 1"),
         "translation": "João Ferreira de Almeida (bible-api.com)",
         "verses": cleaned,
         "attribution": "Texto fornecido por bible-api.com, tradução almeida.",
@@ -41,14 +41,14 @@ def normalize_api_response(payload: dict) -> dict:
 
 def get_creation_passage(timeout: float = 4.0) -> dict:
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_path = CACHE_DIR / "genesis_1_1-5_almeida.json"
-    url = "https://bible-api.com/" + quote("genesis 1:1-5", safe=":-")
+    cache_path = CACHE_DIR / "genesis_1_almeida.json"
+    url = "https://bible-api.com/" + quote("genesis 1", safe=":-")
     try:
         response = requests.get(
             url,
             params={"translation": "almeida"},
             timeout=timeout,
-            headers={"User-Agent": "Salominho/0.1 (educational prototype)"},
+            headers={"User-Agent": "Salominho/0.4.3 (educational prototype)"},
         )
         response.raise_for_status()
         passage = normalize_api_response(response.json())

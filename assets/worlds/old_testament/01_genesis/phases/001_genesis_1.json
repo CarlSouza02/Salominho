@@ -1,0 +1,96 @@
+{
+  "id": "genesis_001",
+  "order": 1,
+  "chapter": 1,
+  "title": "A Criação",
+  "bible_reference": "Gênesis 1",
+  "map_region": "Criação e Éden",
+  "objective": "Reconhecer Deus como Criador e compreender que a criação possui ordem, propósito e valor.",
+  "biblical_emphasis": "Gênesis 1 apresenta Deus como Criador de todas as coisas e o ser humano como criado à sua imagem.",
+  "characters": [
+    "Deus",
+    "Humanidade"
+  ],
+  "key_events": [
+    "Dia 1: Deus cria a luz e separa luz e trevas.",
+    "Dia 2: Deus estabelece a expansão e separa as águas.",
+    "Dia 3: aparecem a porção seca, os mares e a vegetação.",
+    "Dia 4: Deus estabelece os luminares para marcar tempos, dias e anos.",
+    "Dia 5: Deus cria os seres das águas e as aves.",
+    "Dia 6: Deus cria os animais terrestres e o ser humano à sua imagem. Ao contemplar tudo o que havia feito, considera a criação muito boa."
+  ],
+  "narration": [
+    "No princípio, Deus cria os céus e a terra. A terra ainda está sem forma e vazia, e então Deus ordena que haja luz. A luz aparece, e Deus separa a luz das trevas. Assim começa o primeiro dia.",
+    "No segundo dia, Deus estabelece a expansão entre as águas. A narrativa mostra a criação ganhando ordem e estrutura à medida que Deus estabelece cada parte do mundo.",
+    "No terceiro dia, as águas são reunidas e aparece a porção seca. Deus chama a porção seca de terra e as águas de mares. Depois, a terra produz vegetação, plantas e árvores frutíferas.",
+    "No quarto dia, Deus estabelece os luminares no céu. Eles servem para separar o dia da noite e para marcar sinais, tempos, dias e anos.",
+    "No quinto dia, as águas se enchem de seres vivos e as aves passam a voar sobre a terra. Deus abençoa essas criaturas para que se multipliquem.",
+    "No sexto dia, Deus cria os animais terrestres e, por fim, cria o ser humano à sua imagem, homem e mulher. Eles recebem responsabilidade sobre a criação. Ao final do capítulo, Deus contempla tudo o que havia feito e declara que era muito bom."
+  ],
+  "quiz": [
+    {
+      "question": "Segundo Gênesis 1:1, o que Deus criou no princípio?",
+      "options": [
+        "Somente a terra",
+        "Os céus e a terra",
+        "Somente os animais",
+        "Uma cidade"
+      ],
+      "correct_index": 1,
+      "explanation": "Gênesis 1 começa apresentando Deus como Criador dos céus e da terra."
+    },
+    {
+      "question": "Em qual dia aparecem a porção seca e a vegetação?",
+      "options": [
+        "Primeiro dia",
+        "Segundo dia",
+        "Terceiro dia",
+        "Quinto dia"
+      ],
+      "correct_index": 2,
+      "explanation": "No terceiro dia as águas são reunidas, surge a porção seca e a terra produz vegetação."
+    },
+    {
+      "question": "Qual é uma função dos luminares apresentada em Gênesis 1?",
+      "options": [
+        "Construir cidades",
+        "Marcar tempos, dias e anos",
+        "Produzir vegetação",
+        "Separar terra e mares"
+      ],
+      "correct_index": 1,
+      "explanation": "O capítulo associa os luminares à separação entre dia e noite e à marcação de tempos, dias e anos."
+    },
+    {
+      "question": "À imagem de quem o ser humano é criado?",
+      "options": [
+        "Dos animais",
+        "Dos anjos",
+        "De Deus",
+        "Do sol"
+      ],
+      "correct_index": 2,
+      "explanation": "Gênesis 1:26-27 afirma que o ser humano é criado à imagem de Deus."
+    },
+    {
+      "question": "Como Deus avalia tudo o que havia feito ao final de Gênesis 1?",
+      "options": [
+        "Incompleto",
+        "Muito bom",
+        "Sem valor",
+        "Perigoso"
+      ],
+      "correct_index": 1,
+      "explanation": "Ao final do sexto dia, Deus contempla sua criação e a considera muito boa."
+    }
+  ],
+  "devotional": {
+    "title": "Criados com propósito",
+    "text": "Gênesis 1 apresenta um mundo que recebe ordem, vida e propósito pela ação de Deus. O ser humano aparece dentro dessa criação com dignidade especial e também com responsabilidade. Reconhecer Deus como Criador muda a maneira como enxergamos nossa própria vida, as outras pessoas e o mundo que recebemos para cuidar.",
+    "reflection_question": "Se fomos criados à imagem de Deus e recebemos responsabilidade sobre a criação, como isso deve influenciar a maneira como tratamos as pessoas e o mundo ao nosso redor?"
+  },
+  "reward": {
+    "type": "seal",
+    "name": "Propósito"
+  }
+}

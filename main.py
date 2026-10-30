@@ -36,6 +36,7 @@ PAPER = (255, 251, 242)
 GOLD = (244, 188, 73)
 GREEN = (79, 128, 93)
 BLUE = (74, 142, 210)
+RED = (220, 74, 74)
 MUTED = (120, 112, 100)
 LOCKED = (174, 170, 158)
 
@@ -113,6 +114,9 @@ class Game:
         self.current_story_phase = None
         self.story_segment_index = 0
         self.story_result_data = None
+        self.read_scroll = 0
+        self.read_max_scroll = 0
+        self.reading_return = "chapter"
         self.page = "home"
         self.question_index = 0
         self.correct_count = 0
@@ -268,7 +272,7 @@ class Game:
         )
 
         self.text(
-            "Protótipo v0.4.2 • 4 fases narrativas de Gênesis",
+            "v0.4.3 • Fase 1 pronta: Gênesis 1 — A Criação",
             55, 626, MUTED, self.small
         )
 
@@ -384,12 +388,23 @@ class Game:
                 continue
 
             state = self.progress.chapter(world.id, node.chapter)
-            if state["mastered"]:
+            phase_id = (
+                GENESIS_PHASE_ANCHORS.get(node.chapter)
+                if world.id == "genesis"
+                else None
+            )
+            phase_state = self.progress.phase(phase_id) if phase_id else None
+
+            if phase_state and phase_state["mastered"]:
+                fill = GOLD
+            elif phase_state and phase_state["completed"]:
+                fill = BLUE
+            elif state["mastered"]:
                 fill = GOLD
             elif state["read"]:
                 fill = BLUE
             else:
-                fill = (238, 228, 204)
+                fill = RED
 
             hit = pygame.Rect(x - 31, y - 31, 62, 62)
             if hit.collidepoint(pygame.mouse.get_pos()):
@@ -483,9 +498,9 @@ class Game:
             PAPER,
         )
 
-        self.text("○ não lido", 255, 620, MUTED, self.tiny)
-        self.text("● lido", 355, 620, BLUE, self.tiny)
-        self.text("★ dominado", 430, 620, GOLD, self.tiny)
+        self.text("● pendente", 255, 620, RED, self.tiny)
+        self.text("● concluído/lido", 355, 620, BLUE, self.tiny)
+        self.text("★ dominado", 485, 620, GOLD, self.tiny)
         self.text(
             f"{world.chapters} capítulos no mapa",
             560,
@@ -535,7 +550,7 @@ class Game:
             elif state["read"]:
                 fill = BLUE
             else:
-                fill = LOCKED
+                fill = RED
 
             pygame.draw.circle(self.screen, fill, (x, y), 28)
             pygame.draw.circle(self.screen, DARK, (x, y), 28, 3)
@@ -586,9 +601,9 @@ class Game:
             PAPER,
         )
 
-        self.text("cinza = não lido", 145, 613, MUTED, self.tiny)
-        self.text("azul = lido", 655, 613, BLUE, self.tiny)
-        self.text("dourado = dominado", 745, 613, GOLD, self.tiny)
+        self.text("vermelho = pendente", 145, 613, RED, self.tiny)
+        self.text("azul = concluído", 635, 613, BLUE, self.tiny)
+        self.text("dourado = dominado", 755, 613, GOLD, self.tiny)
 
     def story_phase_for_current_chapter(self):
         if self.current_world.id != "genesis":
@@ -637,7 +652,7 @@ class Game:
                 self.button(
                     "LER GÊNESIS 1",
                     pygame.Rect(488, 405, 330, 62),
-                    lambda: self.go("read"),
+                    lambda: self.open_reading("chapter"),
                     GREEN,
                 )
             else:
@@ -691,7 +706,7 @@ class Game:
         self.text(f"Status: {status}", 105, 421, MUTED, self.small)
 
         self.button(
-            "COMEÇAR HISTÓRIA",
+            "COMEÇAR FASE",
             pygame.Rect(535, 495, 360, 58),
             lambda: self.go("story_narration"),
             GOLD,
@@ -739,7 +754,7 @@ class Game:
                 self.small,
             )
 
-        label = "IR PARA O QUIZ" if index == len(parts) - 1 else "PRÓXIMO ▶"
+        label = "LER GÊNESIS 1" if index == len(parts) - 1 else "PRÓXIMO ▶"
         self.button(
             label,
             pygame.Rect(680, 595, 245, 48),
@@ -854,27 +869,59 @@ class Game:
         )
 
     def reading(self):
-        self.heading("Gênesis 1", "Leitura demonstrativa")
+        self.heading("Gênesis 1", "Leitura bíblica da Fase 1")
         self.panel(pygame.Rect(53, 118, 910, 474))
         self.text(self.passage["reference"], 78, 139, DARK, self.bold)
 
-        y = 198
-        for verse in self.passage["verses"][:5]:
-            line = f'{verse["number"]}. {verse["text"]}'
-            for subline in wrap_text(line, self.font, 815):
-                if y > 440:
-                    break
-                self.text(subline, 79, y)
-                y += 34
-            y += 9
-            if y > 440:
-                break
+        content_rect = pygame.Rect(78, 190, 835, 290)
+        lines = []
+        for verse in self.passage.get("verses", []):
+            verse_text = f'{verse["number"]}. {verse["text"]}'
+            wrapped = wrap_text(verse_text, self.small, content_rect.width - 20)
+            lines.extend(wrapped)
+            lines.append("")
 
-        self.text(self.passage["translation"], 78, 500, MUTED, self.small)
-        self.text("Protótipo: a versão final exibirá o capítulo completo.", 78, 530, MUTED, self.tiny)
+        line_height = 25
+        content_height = max(0, len(lines) * line_height)
+        self.read_max_scroll = max(0, content_height - content_rect.height + 15)
+        self.read_scroll = max(0, min(self.read_scroll, self.read_max_scroll))
 
-        self.button("CONCLUIR LEITURA", pygame.Rect(535, 610, 405, 48), self.finish_reading, GREEN)
-        self.button("MAPA", pygame.Rect(53, 610, 174, 48), lambda: self.go("map"), PAPER)
+        self.screen.set_clip(content_rect)
+        y = content_rect.y - self.read_scroll
+        for line in lines:
+            if content_rect.top - line_height <= y <= content_rect.bottom:
+                self.text(line, content_rect.x, y, INK, self.small)
+            y += line_height
+        self.screen.set_clip(None)
+
+        pygame.draw.rect(self.screen, (226, 211, 183), content_rect, 1)
+
+        full_chapter = len(self.passage.get("verses", [])) >= 31
+        self.text(self.passage["translation"], 78, 505, MUTED, self.small)
+        if full_chapter:
+            self.text(
+                "Role o mouse ou use ↑/↓ para percorrer os 31 versículos.",
+                78, 535, MUTED, self.tiny
+            )
+            self.button(
+                "CONCLUIR LEITURA",
+                pygame.Rect(535, 610, 405, 48),
+                self.finish_reading,
+                GREEN,
+            )
+        else:
+            self.text(
+                "Capítulo incompleto: conecte-se uma vez para carregar Gênesis 1 inteiro.",
+                78, 535, RED, self.tiny
+            )
+
+        back_page = "story_narration" if self.reading_return == "story_quiz" else "chapter"
+        self.button(
+            "VOLTAR",
+            pygame.Rect(53, 610, 174, 48),
+            lambda: self.go(back_page),
+            PAPER,
+        )
 
     def quiz(self):
         q = QUESTIONS[self.question_index]
@@ -959,11 +1006,7 @@ class Game:
         if self.story_segment_index < len(phase["narration"]) - 1:
             self.story_segment_index += 1
         else:
-            self.question_index = 0
-            self.correct_count = 0
-            self.selected = None
-            self.answered = False
-            self.go("story_quiz")
+            self.open_reading("story_quiz")
 
     def answer_story(self, index):
         if self.answered:
@@ -1017,13 +1060,33 @@ class Game:
     def next_chapter_page(self):
         self.chapter_page += 1
 
+    def open_reading(self, return_page="chapter"):
+        self.read_scroll = 0
+        self.reading_return = return_page
+        self.go("read")
+
     def finish_reading(self):
+        if len(self.passage.get("verses", [])) < 31:
+            self.message = "Gênesis 1 ainda não foi carregado por completo."
+            return
+
         first = self.progress.mark_read("genesis", 1, 20)
-        self.message = "+20 XP • capítulo marcado como lido" if first else "Capítulo já estava marcado como lido"
+        self.message = (
+            "+20 XP • Gênesis 1 marcado como lido"
+            if first
+            else "Gênesis 1 já estava marcado como lido"
+        )
         self.current_world = self.worlds[0]
         self.current_chapter = 1
-        self.go("chapter")
-        self.message = "+20 XP • capítulo marcado como lido" if first else "Capítulo já estava marcado como lido"
+
+        if self.reading_return == "story_quiz":
+            self.question_index = 0
+            self.correct_count = 0
+            self.selected = None
+            self.answered = False
+            self.go("story_quiz")
+        else:
+            self.go("chapter")
 
     def devotional(self):
         self.go("devotional")
@@ -1131,12 +1194,33 @@ class Game:
                     elif event.key == pygame.K_END:
                         self.set_map_scroll(self.max_map_scroll)
 
+                if event.type == pygame.KEYDOWN and self.page == "read":
+                    if event.key in (pygame.K_DOWN, pygame.K_s, pygame.K_PAGEDOWN):
+                        self.read_scroll = min(
+                            self.read_scroll + 90, self.read_max_scroll
+                        )
+                    elif event.key in (pygame.K_UP, pygame.K_w, pygame.K_PAGEUP):
+                        self.read_scroll = max(0, self.read_scroll - 90)
+                    elif event.key == pygame.K_HOME:
+                        self.read_scroll = 0
+                    elif event.key == pygame.K_END:
+                        self.read_scroll = self.read_max_scroll
+
                 if (
                     event.type == pygame.MOUSEWHEEL
                     and self.page == "map"
                     and self.current_world.id in PENTATEUCH_IDS
                 ):
                     self.scroll_map(-event.y * 150)
+
+                if event.type == pygame.MOUSEWHEEL and self.page == "read":
+                    self.read_scroll = max(
+                        0,
+                        min(
+                            self.read_scroll - event.y * 70,
+                            self.read_max_scroll,
+                        ),
+                    )
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for rect, action in reversed(self.buttons):
@@ -1151,5 +1235,5 @@ if __name__ == "__main__":
     passage = get_creation_passage()
     print("Fonte bíblica:", passage["translation"])
     if passage["offline"]:
-        print("Sem rede: usando cache ou amostra de Gênesis 1:1.")
+        print("Sem rede: usando cache local ou amostra offline de Gênesis 1.")
     Game(passage).run()

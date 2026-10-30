@@ -1,4 +1,4 @@
-"""Carregamento das fases narrativas de Gênesis."""
+"""Carregamento das fases por capítulo de Gênesis."""
 from __future__ import annotations
 
 import json
@@ -6,16 +6,15 @@ from pathlib import Path
 
 
 GENESIS_PHASE_ANCHORS = {
-    1: "genesis_01",
-    4: "genesis_02",
-    6: "genesis_03",
-    11: "genesis_04",
+    1: "genesis_001",
 }
 
 
 def _validate_phase(phase: dict) -> None:
     required = {
         "id",
+        "order",
+        "chapter",
         "title",
         "bible_reference",
         "objective",
@@ -29,6 +28,9 @@ def _validate_phase(phase: dict) -> None:
     missing = sorted(required.difference(phase))
     if missing:
         raise ValueError(f"Fase sem campos obrigatórios: {', '.join(missing)}")
+
+    if not isinstance(phase["chapter"], int) or phase["chapter"] < 1:
+        raise ValueError(f'Capítulo inválido na fase {phase["id"]}')
 
     if not phase["narration"]:
         raise ValueError(f'Fase {phase["id"]} sem narração')
@@ -60,6 +62,8 @@ def load_genesis_story_phases(base: Path) -> dict[str, dict]:
             (root / entry["file"]).read_text(encoding="utf-8")
         )
         _validate_phase(payload)
+        if entry.get("chapter") != payload["chapter"]:
+            raise ValueError(f'Índice inconsistente para a fase {payload["id"]}')
         phases[payload["id"]] = payload
 
     return phases

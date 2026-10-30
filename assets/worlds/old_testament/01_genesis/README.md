@@ -1,29 +1,24 @@
 # Mundo 01 — Gênesis
 
-Background temático: `background.jpg`.
+**Regra estrutural:** cada capítulo bíblico corresponde a uma fase do jogo.
 
-Tema visual do mapa:
+Gênesis possui **50 capítulos**, portanto este mundo terá **50 fases**.
+
+## Primeira fase pronta
+
+### Fase 1 — Gênesis 1: A Criação
+
+- capítulo: Gênesis 1;
+- 6 blocos narrativos, correspondentes aos seis dias descritos no capítulo;
+- leitura de Gênesis 1 com rolagem quando o capítulo completo estiver disponível pela API/cache;
+- 5 perguntas de quiz;
+- devocional e pergunta de reflexão;
+- XP, progresso e selo **Propósito**.
+
+Fluxo:
 
 ```text
-Criação e Éden
-→ Queda, Caim e Noé
-→ Babel, Abraão, Isaque e Jacó
-→ José e Egito
+Mapa → Introdução → Narrativa → Leitura → Quiz → Devocional → Recompensa
 ```
 
-O Python/Pygame deve desenhar trilha, capítulos e progresso por cima da arte.
-
-## Fases narrativas iniciais
-
-Foram adicionadas quatro fases introdutórias em `phases/`:
-
-| # | Fase | Referência | Objetivo |
-|---|---|---|---|
-| 1 | Criação e Queda | Gênesis 1–3 | Importância de obedecer a Deus |
-| 2 | Caim e Abel | Gênesis 4 | Servir a Deus com sinceridade |
-| 3 | A Arca de Noé | Gênesis 6–9 | Fidelidade e obediência a Deus |
-| 4 | Torre de Babel | Gênesis 11:1–9 | Humildade e perigo do orgulho |
-
-Cada arquivo contém narração, acontecimentos principais, personagens, objetivo, três perguntas de quiz, aplicação/devocional e recompensa.
-
-> Essas fases são resumos narrativos para o jogo e não substituem a leitura do texto bíblico.
+O sétimo dia não foi colocado nesta fase, porque Gênesis 1 termina no sexto dia. O descanso do sétimo dia aparece em Gênesis 2:1–3 e será tratado na Fase 2.

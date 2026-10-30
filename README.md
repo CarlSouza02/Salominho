@@ -4,7 +4,7 @@ Jogo educativo de estudos bíblicos em **Python + Pygame**, com progressão por 
 
 ## Versão atual
 
-**v0.4.1 — Backgrounds temáticos do Pentateuco**
+**v0.4.3 — Primeira fase completa: Gênesis 1**
 
 Esta versão consolida a estrutura de mundos, progresso persistente e os cinco primeiros mapas do Antigo Testamento.
 
@@ -16,7 +16,7 @@ Esta versão consolida a estrutura de mundos, progresso persistente e os cinco p
 - estados de capítulo: **pendente**, **concluído** e **dominado**;
 - seleção de mundos paginada;
 - mapas roláveis;
-- Gênesis 1 com leitura e quiz demonstrativos;
+- **Gênesis 1 como primeira fase completa e jogável**;
 - sistema de áudio/vinheta;
 - **Pentateuco funcional com 187 fases**:
   - Gênesis: 50;
@@ -177,23 +177,31 @@ A vinheta de abertura é controlada por `src/audio.py`.
 - **v0.3**: 39 mundos, 929 capítulos e progresso persistente.
 - **v0.4.0**: mapas do Pentateuco, 187 fases e definição da arquitetura visual final.
 - **v0.4.1**: remoção dos mapas técnicos e inclusão dos cinco backgrounds temáticos do Pentateuco.
-- **v0.4.2**: primeiras quatro fases narrativas de Gênesis conectadas ao Pygame.
+- **v0.4.2**: protótipo de histórias agrupando capítulos, posteriormente descartado.
+- **v0.4.3**: arquitetura corrigida para 1 capítulo = 1 fase; Gênesis 1 é a primeira fase completa.
 
-## Fases narrativas jogáveis de Gênesis
+## Fase jogável atual
 
-A v0.4.2 conecta os arquivos JSON de `assets/worlds/old_testament/01_genesis/phases/` ao Pygame.
+A arquitetura oficial é **1 capítulo bíblico = 1 fase**. A primeira fase pronta é:
 
-As primeiras histórias jogáveis são:
-
-- **Criação e Queda**, Gênesis 1–3, selo Obediência;
-- **Caim e Abel**, Gênesis 4, selo Sinceridade;
-- **A Arca de Noé**, Gênesis 6–9, selo Fidelidade;
-- **Torre de Babel**, Gênesis 11:1–9, selo Humildade.
-
-Fluxo de cada fase:
+### Mundo 1 — Gênesis / Fase 1 — Gênesis 1: A Criação
 
 ```text
-Mapa → Introdução → Narrativa → Quiz → Devocional → Recompensa
+Mapa
+  ↓
+Introdução
+  ↓
+6 blocos da Criação
+  ↓
+Leitura de Gênesis 1
+  ↓
+Quiz com 5 perguntas
+  ↓
+Devocional
+  ↓
+XP + selo Propósito
 ```
 
-O progresso dessas histórias é salvo separadamente da leitura dos capítulos bíblicos. Assim, concluir uma história não marca automaticamente o texto bíblico como lido.
+A leitura completa é buscada pelo `bible-api.com` e fica em cache local. Se o jogo estiver offline antes desse primeiro carregamento, a fase continua acessível, mas o capítulo não pode ser marcado como lido até os 31 versículos estarem disponíveis.
+
+Gênesis terá **50 fases**, uma por capítulo. A mesma regra será usada para os demais livros.
