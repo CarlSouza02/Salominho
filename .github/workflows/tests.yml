@@ -10,12 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Package current build
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Salominho-v0.4.4
+          path: |
+            .
+            !.git
+          include-hidden-files: true
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Compile Python
         run: python -m py_compile main.py src/*.py
+
       - name: Run tests
         run: python -m unittest discover -s tests -v
